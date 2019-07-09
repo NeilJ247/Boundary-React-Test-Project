@@ -14,6 +14,7 @@ class DashboardPage extends React.Component {
 
                 <Link to="/users" className="btn btn-link">Users</Link>
                 <Link to="/products" className="btn btn-link">Products</Link>
+                <Link to="/purchases" className="btn btn-link">Purchases</Link>
             </div>
         );
     }
