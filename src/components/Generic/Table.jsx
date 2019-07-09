@@ -2,17 +2,19 @@ import React from "react";
 import PropTypes from 'prop-types';
 
 const Table = (props) => {
-    const tableHeaders = props.headers.map((header) => <th scope="col">{header}</th>);
-    const tableRows = props.rows.map((row, idx) => <tr key={idx}>
-        {
-            renderRow(row)
-        }
-        </tr>);
+    const tableHeaders = props.headers.map((header, idx) => <th key={idx} scope="col">{header}</th>);
+    const tableRows = props.rows.map((row, idx) =>
+        <tr key={idx}>
+            {renderRow(row)}
+        </tr>
+    );
 
     return (
         <table className="table">
             <thead className="thead-dark">
-                {tableHeaders}
+                <tr>
+                    {tableHeaders}
+                </tr>
             </thead>
             <tbody>
                 {tableRows}
