@@ -1,31 +1,21 @@
 import React from "react";
-import productServiceClient from "../../api/product-service-client";
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
 import Table from "../Generic/Table";
+import {getProducts} from "../../store/products/actions";
 
 class ProductsPage extends React.Component {
-    constructor(props){
-        super(props);
-
-        this.state = {
-            products: undefined
-        }
-    }
-
-    async componentDidMount() {
-        let productDataReq = await productServiceClient.getAll();
-        let productData = productDataReq.data;
-
-        this.setState({products: productData.data});
+    componentDidMount() {
+        this.props.action.getProducts();
     }
 
     render() {
-        const products = this.state.products;
-
+        const products = this.props.products;
         const headers = ['#', 'Name', 'Cost'];
-        const rows = products && products.map((product) => {
+        const rows = products.length > 0 ? products.map((product) => {
             return Object.assign({}, product, {cost: '£' + product.cost});
-        });
+        }) : [];
 
         return (
             <Table headers={headers} rows={rows}/>
@@ -33,4 +23,25 @@ class ProductsPage extends React.Component {
     }
 }
 
-export default connect()(ProductsPage);
+ProductsPage.propTypes = {
+    products: PropTypes.array,
+    action: PropTypes.shape({
+        getProducts: PropTypes.func,
+    }),
+};
+
+const mapStateToProps = (state) => {
+    return {
+        products: state.products.products,
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        action: {
+            getProducts: bindActionCreators(getProducts, dispatch)
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductsPage);

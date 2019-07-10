@@ -5,8 +5,7 @@ import {bindActionCreators} from 'redux';
 import Table from "../Generic/Table";
 import { getPurchases } from "../../store/purchases/actions";
 
-
-class ProductsPage extends React.Component {
+class PurchasesPage extends React.Component {
 
     componentDidMount() {
         this.props.action.getPurchases();
@@ -31,7 +30,7 @@ class ProductsPage extends React.Component {
     }
 }
 
-ProductsPage.propTypes = {
+PurchasesPage.propTypes = {
     purchases: PropTypes.array,
     action: PropTypes.shape({
         getPurchases: PropTypes.func,
@@ -52,4 +51,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(PurchasesPage);
