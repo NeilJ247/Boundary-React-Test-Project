@@ -1,30 +1,21 @@
 import React from "react";
-import purchaseServiceClient from "../../api/purchase-service-client";
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
 import Table from "../Generic/Table";
+import { getPurchases } from "../../store/purchases/actions";
+
 
 class ProductsPage extends React.Component {
-    constructor(props){
-        super(props);
 
-        this.state = {
-            purchases: undefined
-        }
-    }
-
-    async componentDidMount() {
-        let purchaseDataReq = await purchaseServiceClient.getAll();
-        let purchaseData = purchaseDataReq.data;
-
-        this.setState({purchases: purchaseData.data});
+    componentDidMount() {
+        this.props.action.getPurchases();
     }
 
     render() {
-        const purchases = this.state.purchases;
-
+        const purchases = this.props.purchases;
         const headers = ['Fullname', 'Email', 'Product', 'Qty', 'Total (£)'];
-
-        const orders = purchases && purchases.map((purchase) => {
+        const orders = purchases.length > 0 ? purchases.map((purchase) => {
             return Object.assign({
                 customerName: purchase.customerName,
                 customerEmail: purchase.email_address,
@@ -32,7 +23,7 @@ class ProductsPage extends React.Component {
                 quantity: purchase.quantity,
                 total: "£" + purchase.total,
             });
-        });
+        }) : [];
 
         return (
             <Table headers={headers} rows={orders}/>
@@ -40,4 +31,25 @@ class ProductsPage extends React.Component {
     }
 }
 
-export default connect()(ProductsPage);
+ProductsPage.propTypes = {
+    purchases: PropTypes.array,
+    action: PropTypes.shape({
+        getPurchases: PropTypes.func,
+    }),
+};
+
+const mapStateToProps = (state) => {
+    return {
+        purchases: state.purchases.purchases,
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        action: {
+            getPurchases: bindActionCreators(getPurchases, dispatch)
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductsPage);
