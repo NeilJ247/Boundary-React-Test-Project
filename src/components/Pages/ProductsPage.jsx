@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Table from "../Generic/Table";
 import {getProducts} from "../../store/products/actions";
+import {NavLink} from "react-router-dom";
 
 class ProductsPage extends React.Component {
     componentDidMount() {
@@ -11,19 +12,31 @@ class ProductsPage extends React.Component {
     }
 
     render() {
-        const products = this.props.products;
+        const {products, info} = this.props;
         const headers = ['#', 'Name', 'Cost'];
         const rows = products.length > 0 ? products.map((product) => {
             return Object.assign({}, product, {cost: '£' + product.cost});
         }) : [];
 
         return (
-            <Table headers={headers} rows={rows}/>
+            <div>
+                {
+                    info &&
+                    <div className="alert alert-success" role="alert">
+                        {info}
+                    </div>
+                }
+                <div className="prod-button">
+                    <NavLink className="btn btn-primary stretched-link" to="/products/add">Add Product</NavLink>
+                </div>
+                <Table headers={headers} rows={rows}/>
+            </div>
         );
     }
 }
 
 ProductsPage.propTypes = {
+    info: PropTypes.string,
     products: PropTypes.array,
     action: PropTypes.shape({
         getProducts: PropTypes.func,
@@ -33,6 +46,7 @@ ProductsPage.propTypes = {
 const mapStateToProps = (state) => {
     return {
         products: state.products.products,
+        info: state.products.info,
     }
 };
 

@@ -1,7 +1,9 @@
-import {FETCHED_PRODUCTS, CREATED_PRODUCT} from "./actions"
+import {FETCHED_PRODUCTS, PRODUCTS_ERROR, PRODUCTS_INFO} from "./actions"
 
 const initialState = {
     products: [],
+    errors: [],
+    info: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,11 +14,17 @@ const reducer = (state = initialState, action) => {
                 products: action.payload,
             };
         }
-        case CREATED_PRODUCT: {
+        case PRODUCTS_ERROR: {
             return {
                 ...state,
-                products: state.products.unshift(action.payload),
-            };
+                errors: action.payload
+            }
+        }
+        case PRODUCTS_INFO: {
+            return {
+                ...state,
+                info: action.payload
+            }
         }
         default: {
             return state;
