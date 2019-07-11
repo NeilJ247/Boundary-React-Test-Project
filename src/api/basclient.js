@@ -1,4 +1,5 @@
 import axios from 'axios';
+import ApiError from './ApiError';
 
 const getClient = (baseUrl = null, proxy = null) => {
     const options = {
@@ -24,7 +25,11 @@ const getClient = (baseUrl = null, proxy = null) => {
             if (error.response.status >= 500) { // 500, Server had a problem.
             }
 
-            return Promise.reject(error)
+            if (error.response.data.errors) {
+                return Promise.reject(new ApiError(error.message, error.response.data.errors));
+            }
+
+            return Promise.reject(error);
         },
     );
 

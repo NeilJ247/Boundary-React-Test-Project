@@ -1,6 +1,7 @@
 import React from "react";
 import userServiceClient from "../../api/user-service-client";
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
+import Table from '../Generic/Table';
 
 class UsersPage extends React.Component {
     constructor(props){
@@ -15,39 +16,19 @@ class UsersPage extends React.Component {
         let userDataReq = await userServiceClient.getAll();
         let userData = userDataReq.data;
 
-        this.setState({users: userData.users});
+        this.setState({users: userData.data});
     }
 
     render() {
+        const users = this.state.users;
+
+        const headers = ['#', 'Forename', 'Surname', 'Email', 'Active'];
+        const rows = users && users.map((user) => {
+            return Object.assign({}, user, {is_active: user.is_active ? 'Y' : 'N'});
+        });
+
         return (
-            this.state.users != null &&
-            <table className="table">
-                <thead className="thead-dark">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Forename</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Active</th>
-                </tr>
-                </thead>
-                <tbody>
-                {
-                    this.state.users.map((user, index) => {
-                            return (
-                                <tr key={index}>
-                                    <th scope="row">{user.id}</th>
-                                    <td>{user.first_name}</td>
-                                    <td>{user.second_name}</td>
-                                    <td>{user.email_address}</td>
-                                    <td>{user.is_active ? 'Y' : 'N'}</td>
-                                </tr>
-                            )
-                        }
-                    )
-                }
-                </tbody>
-            </table>
+            <Table headers={headers} rows={rows}/>
         );
     }
 }
